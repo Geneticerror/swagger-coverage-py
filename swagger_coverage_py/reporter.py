@@ -52,12 +52,10 @@ class CoverageReporter:
         elif Path(cmd_venv_2).exists():
             cmd_path = cmd_venv_2
         elif Path(tox).exists():
-            root = Path(tox)
             prefix = "py"
-            directory_list = list(filter(lambda x: x.startswith(prefix), [item for item in os.listdir(root) if
-                                                                          os.path.isdir(os.path.join(root, item))]))
+            directory_list = self.dir_list(Path(tox), prefix)
             for directory in directory_list:
-                cmd_tox = f".tox/{directory}/src/{inner_location}"
+                cmd_tox = f".tox/{directory}/lib/{self.dir_list(Path(tox), prefix)[0]}/src/{inner_location}"
                 if Path(cmd_tox).exists():
                     cmd_path = cmd_tox
                     break
@@ -74,6 +72,12 @@ class CoverageReporter:
         command = command if platform.system() != "Windows" else command.replace("/", "\\")
 
         os.system(command)
+
+    @staticmethod
+    def dir_list(root, prefix):
+        directory_list = list(filter(lambda x: x.startswith(prefix), [item for item in os.listdir(root) if
+                                                                      os.path.isdir(os.path.join(root, item))]))
+        return directory_list
 
     def cleanup_input_files(self):
         shutil.rmtree(self.output_dir, ignore_errors=True)
