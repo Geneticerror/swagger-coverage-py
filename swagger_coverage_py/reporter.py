@@ -43,6 +43,7 @@ class CoverageReporter:
         cmd_ = f"src/{inner_location}"
         cmd_venv = f"venv/src/{inner_location}"
         cmd_venv_2 = f".venv/src/{inner_location}"
+        tox = f".tox"
 
         if Path(cmd_).exists():
             cmd_path = cmd_
@@ -50,6 +51,16 @@ class CoverageReporter:
             cmd_path = cmd_venv
         elif Path(cmd_venv_2).exists():
             cmd_path = cmd_venv_2
+        elif Path(tox).exists():
+            root = Path(tox)
+            prefix = "py"
+            directory_list = list(filter(lambda x: x.startswith(prefix), [item for item in os.listdir(root) if
+                                                                          os.path.isdir(os.path.join(root, item))]))
+            for directory in directory_list:
+                cmd_tox = f".tox/{directory}/src/{inner_location}"
+                if Path(cmd_tox).exists():
+                    cmd_path = cmd_tox
+                    break
         else:
             raise Exception(
                 f"No commandline tools is found in following locations:\n{cmd_}\n{cmd_venv}\n"
