@@ -12,7 +12,7 @@ class CoverageReporter:
     def __init__(self, api_name: str, host: str):
         self.host = host
         self.swagger_doc_file = f"swagger-{api_name}.json"
-        self.output_dir = self.__get_output_dir()
+        self.output_dir = f"{self.__get_output_dir()}-{api_name}"
         self.ignore_requests = []
         self.swagger_coverage_config = f"swagger-coverage-config-{api_name}.json"
 
@@ -66,12 +66,6 @@ class CoverageReporter:
         command = command if platform.system() != "Windows" else command.replace("/", "\\")
 
         os.system(command)
-
-    @staticmethod
-    def dir_list(root, prefix):
-        directory_list = list(filter(lambda x: x.startswith(prefix), [item for item in os.listdir(root) if
-                                                                      os.path.isdir(os.path.join(root, item))]))
-        return directory_list
 
     def cleanup_input_files(self):
         shutil.rmtree(self.output_dir, ignore_errors=True)
