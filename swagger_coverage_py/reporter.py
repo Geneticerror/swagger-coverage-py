@@ -38,24 +38,15 @@ class CoverageReporter:
             swagger_json_data["swagger"] = "2.0"
             f.write(json.dumps(swagger_json_data))
 
-    def generate_report(self, installed_as_module=False):
-        inner_location = "swagger-coverage/swagger_coverage_py/swagger-coverage-commandline/bin/swagger-coverage-commandline"
-        cmd_ = f"src/{inner_location}"
-        cmd_venv = f"venv/src/{inner_location}"
-        cmd_venv_2 = f".venv/src/{inner_location}"
+    def generate_report(self, installed_as_module=True):
+        inner_location = 'swagger-coverage-commandline/bin/swagger-coverage-commandline'
 
-        if Path(cmd_).exists():
-            cmd_path = cmd_
-        elif Path(cmd_venv).exists():
-            cmd_path = cmd_venv
-        elif Path(cmd_venv_2).exists():
-            cmd_path = cmd_venv_2
-        elif installed_as_module:
-            cmd_path = os.path.join(os.path.dirname(__file__), 'swagger-coverage-commandline/bin/swagger-coverage-commandline')
+        if installed_as_module:
+            cmd_path = os.path.join(os.path.dirname(__file__), inner_location)
             assert Path(cmd_path).exists(), cmd_path
         else:
             raise Exception(
-                f"No commandline tools is found in following locations:\n{cmd_}\n{cmd_venv}\n"
+                f"No commandline tools is found in following locations:\n{inner_location}\n"
             )
 
         if config := self.swagger_coverage_config:
