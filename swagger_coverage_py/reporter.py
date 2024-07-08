@@ -38,6 +38,13 @@ class CoverageReporter:
             swagger_json_data["swagger"] = "2.0"
             f.write(json.dumps(swagger_json_data))
 
+    def is_any_files(self):
+        _, _, files = next(os.walk(self.output_dir))
+        if len(files) == 0:
+            return False
+        else:
+            return True
+
     def generate_report(self, installed_as_module=True):
         inner_location = 'swagger-coverage-commandline/bin/swagger-coverage-commandline'
 
@@ -56,7 +63,8 @@ class CoverageReporter:
 
         command = command if platform.system() != "Windows" else command.replace("/", "\\")
 
-        os.system(command)
+        if self.is_any_files():
+            os.system(command)
 
     def cleanup_input_files(self):
         shutil.rmtree(self.output_dir, ignore_errors=True)
